@@ -5,11 +5,15 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.1",
+    "command-line-args": "^5.0.2",
     "esprima": "^4.0.0",
     "glob-fs": "^0.1.7",
     "jsel": "^1.1.6",
     "tty-table": "^2.6.7",
     "typescript": "^2.9.2"
+  },
+  "bin": {
+    "ast-easy": "./cli.js"
   },
   "scripts": {
     "start": "node index"

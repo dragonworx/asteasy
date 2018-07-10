@@ -7,7 +7,7 @@ const sampleQueries = {
         console.log(1, node);
       },
     },
-    "nestedSimple": {
+    "nested": {
       'ClassDeclaration': {
         'MethodDeclaration': {
           'NewExpression/Identifier[text() = "ContextImpl"]': node => {
@@ -35,7 +35,7 @@ const sampleQueries = {
   },
 };
 
-const lang = 'js';
+const lang = 'ts';
 const sampleQueryName = 'nested';
 
 AstQuery.glob(`./test/*.${lang}`, sampleQueries[lang][sampleQueryName]);

@@ -67,6 +67,7 @@ module.exports = class Parser {
         parentMetaNode.children[nodeType].push(metaNode);
       }
       const range = metaNode.range;
+      const bg = 'bgWhite';
       const output = `${chalk.gray('.'.repeat(level + 1)) + chalk.cyan(nodeType)}:`.padEnd(50, ' ') +
         `${chalk.blue(`${range[0]}:${range[1]}`)} `.padEnd(17, ' ') + 
         `${chalk.yellow(this.source.substring(range[0], range[1]).replace(/\n/g, '↩️').trim())}`;
