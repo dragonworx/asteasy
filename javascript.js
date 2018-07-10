@@ -1,34 +1,19 @@
 const esprima = require('esprima');
 const Parser = require('./parser');
+const MetaNode = require('./metaNode');
 
-module.exports = class JavaScriptParser extends Parser {
-  parse (sourceCode) {
-    return esprima.parse(sourceCode, { sourceType: 'module', range: true });
+class JavaScriptMetaNode extends MetaNode {
+  cache () {
+    this.range = this.node.range;
+    this.type = this.node.type;
+    this.text = this.node.name;
   }
 
-  getMetaNode (nodeType, astNode, level) {
-    return {
-      type: nodeType,
-      level: level,
-      children: {},
-      text: astNode.name,
-      node: astNode,
-    };
-  }
-
-  getRange (astNode) {
-    return [astNode.pos, astNode.end];
-  }
-
-  getNodeType (astNode) {
-    return astNode.type;
-  }
-
-  visitChildren (astNode, level, metaNode) {
+  getChildren () {
     const children = [];
 
-    for (let key in astNode) {
-      const val = astNode[key];
+    for (let key in this.node) {
+      const val = this.node[key];
       if (Array.isArray(val)) {
         children.push.apply(children, val);
       } else if (typeof val === 'object' && val !== null) {
@@ -36,6 +21,20 @@ module.exports = class JavaScriptParser extends Parser {
       }
     }
 
-    children.forEach(childNode => this.visit(childNode, level + 1, metaNode));
+    return children;
+  }
+}
+
+module.exports = class JavaScriptParser extends Parser {
+  getRootASTNode (sourceCode) {
+    return esprima.parse(sourceCode, { sourceType: 'module', range: true });
+  }
+
+  getMetaNode (astNode) {
+    return new JavaScriptMetaNode(astNode);
+  }
+
+  get lang () {
+    return 'JavaScript';
   }
 };

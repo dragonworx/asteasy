@@ -1,31 +1,30 @@
 const ts = require('typescript');
 const Parser = require('./parser');
+const MetaNode = require('./metaNode');
+
+class TypeScriptMetaNode extends MetaNode {
+  cache () {
+    this.range = [this.node.pos, this.node.end];
+    this.type = ts.SyntaxKind[this.node.kind];
+    this.text = this.node.getText();
+  }
+
+  getChildren () {
+    // astNode.forEachChild(childNode => this.visit(childNode, level + 1, metaNode));
+    return this.node.getChildren();
+  }
+}
 
 module.exports = class TypeScriptParser extends Parser {
-  parse (sourceCode, inputFile) {
-    return ts.createSourceFile(inputFile, sourceCode, ts.ScriptTarget.Latest, true);
+  getRootASTNode (sourceCode) {
+    return ts.createSourceFile('inputFile.ts', sourceCode, ts.ScriptTarget.Latest, true);
   }
 
-  getMetaNode (nodeType, astNode, level) {
-    return {
-      type: nodeType,
-      level: level,
-      children: {},
-      text: astNode.getText(),
-      node: astNode,
-    };
+  getMetaNode (astNode) {
+    return new TypeScriptMetaNode(astNode);
   }
 
-  getRange (astNode) {
-    return [astNode.pos, astNode.end];
-  }
-
-  getNodeType (astNode) {
-    return ts.SyntaxKind[astNode.kind];
-  }
-
-  visitChildren (astNode, level, metaNode) {
-    // astNode.forEachChild(childNode => this.visit(childNode, level + 1, metaNode));
-    astNode.getChildren().forEach(childNode => this.visit(childNode, level + 1, metaNode));
+  get lang () {
+    return 'TypeScript';
   }
 };

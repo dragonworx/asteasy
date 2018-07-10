@@ -1,15 +1,17 @@
 module.exports = schema = {
-  nodeName (node) {
-    return node.type;
+  nodeName (metaNode) {
+    return metaNode.type;
   },
-  childNodes (node) {
+  childNodes (metaNode) {
     const children = [];
-    for (let key in node.children) {
-      children.push.apply(children, node.children[key]);
+    for (let key in metaNode.children) {
+      children.push.apply(children, metaNode.children[key]);
     }
     return children;
+    // const children = metaNode.getChildren();
+    // return children;
   },
-  nodeValue (node) {
-    return node.text;
+  nodeValue (metaNode) {
+    return metaNode.text;
   }
 };
