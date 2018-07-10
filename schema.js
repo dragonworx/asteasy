@@ -13,5 +13,10 @@ module.exports = schema = {
   },
   nodeValue (metaNode) {
     return metaNode.text;
-  }
+  },
+  attributes () {
+    return {
+      
+    }
+  },
 };

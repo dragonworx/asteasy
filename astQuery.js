@@ -30,7 +30,7 @@ module.exports = class ASTQuery {
     parser.setRootMetaNode(metaNode);
     Object.keys(query).forEach(key => {
       const value = query[key];
-      const xpath = key;
+      const xpath = (key.substr(0, 2) === '//' ? '' : '//') + key;
       log('xpath', xpath, 'magenta');
       const nodes = parser.selectAll(xpath);
       const wasResult = nodes && nodes.length;
