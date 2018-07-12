@@ -17,6 +17,7 @@ class TypeScriptMetaNode extends MetaNode {
 
 module.exports = class TypeScriptParser extends Parser {
   getRootASTNode (sourceCode) {
+    // todo: check jsx flag
     return ts.createSourceFile('inputFile.ts', sourceCode, ts.ScriptTarget.Latest, true);
   }
 

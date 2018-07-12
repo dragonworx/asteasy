@@ -1,11 +1,14 @@
 {
-  "name": "asteasy",
+  "name": "jast",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@babel/cli": "^7.0.0-beta.53",
+    "@babel/core": "^7.0.0-beta.53",
+    "@babel/polyfill": "^7.0.0-beta.53",
+    "@babel/preset-env": "^7.0.0-beta.53",
     "chalk": "^2.4.1",
-    "command-line-args": "^5.0.2",
     "esprima": "^4.0.0",
     "glob-fs": "^0.1.7",
     "jsel": "^1.1.6",
@@ -13,7 +16,7 @@
     "typescript": "^2.9.2"
   },
   "bin": {
-    "ast-easy": "./cli.js"
+    "jast": "./cli"
   },
   "scripts": {
     "start": "node index"

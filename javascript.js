@@ -27,6 +27,8 @@ class JavaScriptMetaNode extends MetaNode {
 
 module.exports = class JavaScriptParser extends Parser {
   getRootASTNode (sourceCode) {
+    // todo: use parseScript or parseModule from global options
+    // add jsx flag if required
     return esprima.parse(sourceCode, { sourceType: 'module', range: true });
   }
 

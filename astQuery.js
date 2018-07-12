@@ -19,6 +19,7 @@ module.exports = class ASTQuery {
   }
 
   process (parser, query, metaNode, level = 0) {
+    // TODO: get relative xpath to work
     parser.setRootMetaNode(metaNode);
     const pad = '.'.repeat(level);
     Object.keys(query).forEach(key => {
@@ -44,13 +45,19 @@ module.exports = class ASTQuery {
     });
   }
 
-  static glob (globPattern, query) {
+  static glob (filePath, query = undefined) {
     const astQuery = new ASTQuery(query);
-
-    glob.readdirStream(globPattern, {})
-    .on('data', function (file) {
-      const filePath = file.path;
+    // todo: jsx
+    if (filePath.indexOf('*') === -1) {
+      // single file
       astQuery.applyToFile(filePath);
-    });
+    } else {
+      // glob
+      glob.readdirStream(filePath, {})
+        .on('data', function (file) {
+          const filePath = file.path;
+          astQuery.applyToFile(filePath);
+        });
+    }
   }
 };
