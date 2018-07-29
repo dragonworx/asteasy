@@ -1,51 +1,29 @@
-const AstQuery = require('./astQuery');
+const astQuery = require('./astQuery');
 
 const sampleQueries = {
-  "ts": {
-    "simple": {
-      'ClassDeclaration//MethodDeclaration//NewExpression/Identifier[text() = "ContextImpl"]': node => {
-        console.log(1, node);
-      },
-    },
-    "nested": {
-      'ClassDeclaration': {
-        'MethodDeclaration': {
-          'NewExpression/Identifier[text() = "ContextImpl"]': node => {
-            console.log(2, node);
-          },
-        },
-      },
-    },
+  "basic": {
+    'Identifier[@name = "ContextImpl"]': node => console.log(node),
   },
-  "js": {
-    "simple": {
-      'ClassDeclaration//MethodDefinition//NewExpression/Identifier[text() = "ContextImpl"]': node => {
-        console.log(3, node);
-      },
-    },
-    "nested": {
-      'ClassDeclaration': {
-        'MethodDefinition': {
-          'NewExpression/Identifier[text() = "ContextImpl"]': node => {
-            console.log(4, node);
-          },
-        },
+  "simple": {
+    'ClassDeclaration//ClassMethod//NewExpression/Identifier[@name = "ContextImpl"]': node => console.log(node),
+  },
+  "simple1": {
+    '//VariableDeclaration[@kind = "const"]': node => console.log(node)
+  },
+  "nested": {
+    'ClassDeclaration': {
+      'ClassMethod': {
+        'Identifier[@name = "ContextImpl"]': node => console.log(node.type)
       },
     },
   },
 };
 
-const lang = 'ts';
-const sampleQueryName = 'nested';
-
-// AstQuery.glob(`./test/*.${lang}`, sampleQueries[lang][sampleQueryName]);
-
-const parser = require('@babel/parser');
-const result = parser.parse('const a:any = <foo>123</foo>', {
-  sourceType: 'unambiguous',
+astQuery(`./test/*.js`, sampleQueries.nested, {
   plugins: [
     'jsx',
     'typescript',
-  ]
+  ],
+  log: false,
+  debug: true,
 });
-console.log(result);

@@ -2,21 +2,30 @@ module.exports = schema = {
   nodeName (metaNode) {
     return metaNode.type;
   },
+
   childNodes (metaNode) {
     const children = [];
     for (let key in metaNode.children) {
       children.push.apply(children, metaNode.children[key]);
     }
     return children;
-    // const children = metaNode.getChildren();
-    // return children;
   },
+
   nodeValue (metaNode) {
     return metaNode.text;
   },
-  attributes () {
-    return {
-      
+  
+  attributes (metaNode) {
+    const astNode = metaNode.node;
+    const attribs = {};
+    for (let key in astNode) {
+      const value = astNode[key];
+      const type = typeof value;
+      if (type === 'string' || type === 'number' || type === 'boolean') {
+        attribs[key] = value;
+      }
     }
+    attribs.name = metaNode.text;
+    return attribs;
   },
 };
