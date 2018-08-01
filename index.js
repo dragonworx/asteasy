@@ -26,11 +26,34 @@ const sampleQueries = {
   },
 };
 
-astQuery(`./test/*.ts`, sampleQueries.basic, {
-  plugins: [
-    'jsx',
-    'typescript',
-  ],
-  log: true,
-  debug: false,
+// astQuery(`./test/*.ts`, sampleQueries.basic, {
+//   plugins: [
+//     'jsx',
+//     'typescript',
+//   ],
+//   log: true,
+//   debug: false,
+// });
+
+const Table = require('./table');
+
+const table = new Table([
+  {
+    size: 8,
+    align: 'center',
+    blank: '.',
+  },
+  {
+    size: 10,
+    align: 'right',
+    blank: '.',
+  },
+]);
+
+table.log([
+  '1234567890',
+  'efg',
+], {
+  0: 'blue',
+  1: 'red'
 });
