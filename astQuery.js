@@ -11,12 +11,12 @@ class ASTQuery {
 
   applyToFile (filePath) {
     const sourceCode = fs.readFileSync(filePath, 'utf-8');
-    if (this.options.debug) {
-      log('file', filePath, 'cyan');
-    }
     const parser = new Parser(sourceCode, filePath, this.options);
     this.parser = parser;
     if (this.query) {
+      if (this.options.debug) {
+        log('process', filePath, 'green');
+      }
       parser.resetScope();
       this.process(this.query, parser.rootMetaNode);
     }
@@ -42,7 +42,7 @@ class ASTQuery {
         if (typeof queryValue === 'function') {
           // pass results to function
           for (let i = 0; i < nodes.length; i++) {
-            queryValue(nodes[i], i, nodes);
+            queryValue(nodes[i], i, nodes, parser);
           }
         } else if (typeof queryValue === 'object') {
           for (let i = 0; i < nodes.length; i++) {
@@ -57,7 +57,7 @@ class ASTQuery {
   }
 }
 
-module.exports = function astQuery (filePath, query = undefined, arg3 = {}) {
+function astQuery (filePath, query = undefined, arg3 = {}) {
   const options = arguments.length === 2 && typeof query === 'object' ? query : arg3;
   const astQuery = new ASTQuery(query, options);
   if (filePath.indexOf('*') === -1) {
@@ -71,4 +71,18 @@ module.exports = function astQuery (filePath, query = undefined, arg3 = {}) {
         astQuery.applyToFile(filePath);
       });
   }
+}
+
+astQuery.Parser = Parser;
+
+astQuery.parseScript = function (src, options = {}) {
+  const tempParser = new Parser(`function scope() { ${src} }`, null, options);
+  return tempParser.selectAll('//BlockStatement/*');
 };
+
+astQuery.parseModule = function (src, options = {}) {
+  const tempParser = new Parser(src, null, options);
+  return tempParser.selectAll('//BlockStatement/*');
+};
+
+module.exports = astQuery;

@@ -5,13 +5,15 @@ const schema = require('./schema');
 const map = require('./map');
 const log = require('./log');
 const chalk = require('chalk');
+const generate = require('@babel/generator').default;
 
 module.exports = class Parser {
-  constructor (sourceCode, inputFilePath, options) {
+  constructor (sourceCode, inputFilePath, options = {}) {
     this.source = sourceCode.toString();
     this.filePath = inputFilePath;
     this.options = options;
     if (this.options.debug) {
+      log('parse', inputFilePath, 'green');
       log('source', sourceCode, 'blue');
       log('filePath', inputFilePath, 'blue');
     }
@@ -54,7 +56,7 @@ module.exports = class Parser {
     if (astNode.__metaNode) {
       this.metaNode = astNode.__metaNode;
     } else {
-      if (this.options.debug) {
+      if (this.options.debug || this.options.log) {
         log('visit', astNode.type, 'red');
       }
       this.metaNode = this.visit(astNode, 0);
@@ -88,7 +90,7 @@ module.exports = class Parser {
       const previewMaxLen = 50;
       let preview = this.source.substring(range.start, range.end).replace(/\n/g, '↩️').trim();
       if (preview.length > previewMaxLen) {
-        preview = preview.substr(0, previewMaxLen) + '✂️';
+        preview = preview.substr(0, previewMaxLen) + '...';
       }
 
       const output = `${chalk.white(range.loc.start.line)}: ${chalk.gray(`${range.start}: ${range.end - range.start}`)} `.padEnd(17, ' ') + 
@@ -137,5 +139,9 @@ module.exports = class Parser {
     } else {
       this.setMetaScope(this.rootMetaNode);
     }
+  }
+
+  generate () {
+    return generate(this.rootASTNode);
   }
 };
