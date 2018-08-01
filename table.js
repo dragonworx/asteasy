@@ -1,11 +1,10 @@
 const columns = [];
 const chalk = require('chalk');
 
-//process.stdout.columns
-
 class Table {
-  constructor (columns = []) {
+  constructor (columns = [], separator = ' | ') {
     this.columns = columns;
+    this.separator = separator;
     if (!columns.length) {
       throw new Error('Table needs at least one column defined');
     }
@@ -18,7 +17,7 @@ class Table {
     });
   }
 
-  renderRow (items, colors = {}, separator = '') {
+  renderRow (items, colors = {}) {
     const cells = [];
     for (let i = 0; i < this.columns.length; i++) {
       const item = items[i];
@@ -27,7 +26,7 @@ class Table {
       if (length.toString().indexOf('.') > -1) {
         length = Math.floor(process.stdout.columns * length);
       }
-      const align = this.columns[i].align;
+      const align = this.columns[i].align || 'left';
       const blank = this.columns[i].blank || ' ';
       const color = colors[i] ? chalk[colors[i]] : x => x;
       let str = value.substr(0, length);
@@ -41,11 +40,11 @@ class Table {
       }
       cells.push(color(str));
     }
-    return cells.join(separator);
+    return cells.join(chalk.gray(this.separator));
   }
 
-  log (items, colors = {}, separator = '') {
-    const str = this.renderRow(items, colors, separator);
+  log (items, colors = {}) {
+    const str = this.renderRow(items, colors);
     console.log(str);
     return str;
   }

@@ -75,13 +75,8 @@ function astQuery (filePath, query = undefined, arg3 = {}) {
 
 astQuery.Parser = Parser;
 
-astQuery.parseScript = function (src, options = {}) {
+astQuery.snippet = function (src, options = {}) {
   const tempParser = new Parser(`function scope() { ${src} }`, null, options);
-  return tempParser.selectAll('//BlockStatement/*');
-};
-
-astQuery.parseModule = function (src, options = {}) {
-  const tempParser = new Parser(src, null, options);
   return tempParser.selectAll('//BlockStatement/*');
 };
 

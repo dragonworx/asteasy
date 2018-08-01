@@ -6,17 +6,45 @@ const map = require('./map');
 const log = require('./log');
 const chalk = require('chalk');
 const generate = require('@babel/generator').default;
+const Table = require('./table');
+
+const logTableColors = {
+  0: 'blue',
+  1: 'green',
+  2: 'gray',
+  3: 'cyan',
+  4: 'yellow',
+};
 
 module.exports = class Parser {
   constructor (sourceCode, inputFilePath, options = {}) {
     this.source = sourceCode.toString();
     this.filePath = inputFilePath;
     this.options = options;
-    if (this.options.debug) {
-      log('parse', inputFilePath, 'green');
-      log('source', sourceCode, 'blue');
+    if (this.options.debug || this.options.log) {
       log('filePath', inputFilePath, 'blue');
     }
+    this.logTable = new Table([
+      {
+        size: 3,
+        align: 'center',
+      },
+      {
+        size: 3,
+        align: 'center',
+      },
+      {
+        size: 3,
+        align: 'center',
+      },
+      {
+        size: 40,
+        align: 'left',
+      },
+      {
+        size: 50,
+      }
+    ]);
     this.stack = [];
     const rootASTNode = this.getRootASTNode(this.source);
     this.rootASTNode = rootASTNode;
@@ -93,12 +121,14 @@ module.exports = class Parser {
         preview = preview.substr(0, previewMaxLen) + '...';
       }
 
-      const output = `${chalk.white(range.loc.start.line)}: ${chalk.gray(`${range.start}: ${range.end - range.start}`)} `.padEnd(17, ' ') + 
-        `${chalk.gray('.'.repeat(level + 1)) + chalk.cyan(nodeType)}:`.padEnd(50, ' ') +
-        `${chalk.yellow(preview)}`;
-
       if (this.options.log) {
-        console.log(output);
+        this.logTable.log([
+          range.loc.start.line,
+          range.start,
+          range.end - range.start,
+          `${'.'.repeat(level + 1)}${nodeType}`,
+          preview
+        ], logTableColors);
       }
     }
   

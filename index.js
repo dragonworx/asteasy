@@ -3,8 +3,9 @@ const astQuery = require('./astQuery');
 const sampleQueries = {
   "basic": {
     'ClassMethod/BlockStatement': (node, i, nodes, parser) => {
-      const ast = astQuery.parseScript(`const a:string = 'foo'`, {
-        plugins: ['typescript']
+      const ast = astQuery.snippet(`const a:string = 'foo'`, {
+        plugins: ['typescript'],
+        log: true
       });
       node.body.splice(0, 0, ...ast);
       const output = parser.generate();
@@ -26,34 +27,11 @@ const sampleQueries = {
   },
 };
 
-// astQuery(`./test/*.ts`, sampleQueries.basic, {
-//   plugins: [
-//     'jsx',
-//     'typescript',
-//   ],
-//   log: true,
-//   debug: false,
-// });
-
-const Table = require('./table');
-
-const table = new Table([
-  {
-    size: 8,
-    align: 'center',
-    blank: '.',
-  },
-  {
-    size: 10,
-    align: 'right',
-    blank: '.',
-  },
-]);
-
-table.log([
-  '1234567890',
-  'efg',
-], {
-  0: 'blue',
-  1: 'red'
+astQuery(`./test/*.ts`, sampleQueries.basic, {
+  plugins: [
+    'jsx',
+    'typescript',
+  ],
+  log: true,
+  debug: false,
 });
